@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 
 
-const evaluateDocument = async (page) => {
+const getRawPageData = async (page) => {
   const listings = await page.evaluate(() => {
     let listingsData = [];
 
@@ -26,7 +26,7 @@ const evaluateDocument = async (page) => {
   return listings;
 }
 
-const webscraping = async pageURL => {
+const scrapper = async pageURL => {
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox"]
@@ -38,15 +38,13 @@ const webscraping = async pageURL => {
     console.log(`Opening page ${pageURL} ...`)
     await page.goto(pageURL);
 
-    listingsData = await evaluateDocument(page);
+    listingsData = await getRawPageData(page);
     return listingsData;
-
   } catch (e) {
     console.error(e);
+  } finally {
+    browser.close();
   }
-
-  browser.close();
-  return results;
 };
 
-module.exports = webscraping;
+module.exports = scrapper;

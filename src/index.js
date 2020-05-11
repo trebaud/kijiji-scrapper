@@ -1,4 +1,4 @@
-const webscrapper = require("./webscrapper");
+const scrapper = require("./webscrapper");
 const analytics = require("./analytics");
 const fs = require('fs');
 
@@ -31,7 +31,7 @@ const paginate = async () => {
     console.log(`######### Fetching Page n/${pageNumber}`)
     try {
       newPageURL = getNextPageUrl(pageURL, pageNumber);
-      const pageResults = await webscrapper(newPageURL);
+      const pageResults = await scrapper(newPageURL);
       rawData = rawData.concat(pageResults);
     } catch(err) {
       console.error(err);
