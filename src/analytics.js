@@ -121,7 +121,7 @@ const processRawListingsData = (listingsData) => {
         rating,
       }
     })
-    .sort((a, b) => (a.rating - b.rating));
+    .sort((a, b) => (b.rating - a.rating));
 
   console.log(filteredListings);
   console.log(`\nProcessed ${listings.length} listings.`)
