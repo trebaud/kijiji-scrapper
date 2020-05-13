@@ -21,7 +21,7 @@ const getRawPageData = async (page) => {
         price,
         distance,
         meta: {
-          url: `https://www.kijiji.ca${title.href}`,
+          url: title.href,
         },
       }
 
