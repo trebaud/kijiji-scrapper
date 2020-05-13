@@ -3,24 +3,29 @@ const puppeteer = require("puppeteer");
 
 const getRawPageData = async (page) => {
   const listings = await page.evaluate(() => {
-    let listingsData = [];
+    const listingsDOM = Array.from(document.querySelectorAll('div.info-container'));
 
-    const baseURL = 'https://www.kijiji.ca';
-    const listingsDOM = document.querySelectorAll('.info-container');
-    listingsDOM.forEach(listingEl => {
-      const { innerText, children } = listingEl;
+    return listingsDOM.map(listingEl => {
+      const title = listingEl.querySelector('div.title a');
+      const datePosted = listingEl.querySelector('div.location span.date-posted').innerText;
+      const description = listingEl.querySelector('div.description').innerText;
+      const price = listingEl.querySelector('div.price').innerText;
+      const details = listingEl.querySelector('div.details').innerText;
+      const distance = listingEl.querySelector('div.distance').innerText;
 
-      const titleData = children[1].offsetParent.dataset;
+      const text = description.concat(details).concat(title.innerText)
 
-      listingsData.push({
-        rawTextData: innerText.split('\n'),
+      return {
+        text,
+        datePosted,
+        price,
+        distance,
         meta: {
-          url: `${baseURL}${titleData.vipUrl}`,
-          id: titleData.listingId,
-        }
-      })
-    });
-    return listingsData;
+          url: `https://www.kijiji.ca${title.href}`,
+        },
+      }
+
+    })
   });
 
   return listings;

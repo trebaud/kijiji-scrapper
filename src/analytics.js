@@ -1,21 +1,25 @@
 const keywordsWhiteList = [
+  "PLATEAU",
+  "Patrie",
+  "Petite",
+  "Plateau",
+  "ROSEMONT",
+  "Rosemont",
+  "WESTMOUNT",
+  "Westmount",
+  "balcon",
+  "balcony",
   "italie",
   "italy",
+  "laurier",
   "metro",
+  "mont-royal",
   "métro",
-  "plateau",
-  "Plateau",
-  "Petite",
   "patrie",
-  "Patrie",
-  "petite",
-  "westmount",
+  "plateau",
   "rosemont",
-  "Rosemont",
-  "ROSEMONT",
-  "Westmount",
-  "WESTMOUNT",
-  "PLATEAU",
+  "terasse",
+  "westmount",
 ]
 
 const keywordsBlackList = [
@@ -24,27 +28,31 @@ const keywordsBlackList = [
   "Honoré-Beaugrand",
   "LaSalle",
   "McGill Student",
+  "VSL",
   "Ville Saint-Laurent",
+  "West Island",
   "ahuntsic",
   "assomption",
-  "cadillac",
-  "langelier",
   "basement",
   "bourassa",
   "cadillac",
   "cartier",
   "cartierville",
   "cremazie",
-  "crémazie",
   "dorval",
   "echange",
   "exchange",
+  "fabre",
   "henri",
-  "lasalle",
+  "hochelaga",
+  "jarry",
+  "langelier",
   "lasalle",
   "laval",
   "longueil",
   "masson",
+  "mercier",
+  "homa",
   "molson",
   "nord",
   "pierrefonds",
@@ -52,7 +60,9 @@ const keywordsBlackList = [
   "st-michel",
   "student",
   "students",
+  "suspendue",
   "swap",
+  "verdun",
   "viau",
   "villeray",
 ]
@@ -67,65 +77,56 @@ const generateKeywords = (list) => {
 }
 
 const rate = (listing) => {
-  let rating = (1 / listing.timeSince);
-
-  if (keywordsWhiteList.some(word => listing.description.includes(word))) {
-    rating = rating * 10;
+  let matches = [];
+  for(const word of keywordsWhiteList) {
+    if (listing.text.includes(word)) {
+      matches.push(word);
+    }
   }
 
-  return rating;
+  return {
+    ...listing,
+    rating: (1 / listing.timeSince) * Math.pow(10, matches.length) * 100,
+    matches,
+  };
 }
 
-const processRawListingData = (listingData) => {
-  const { rawTextData, meta } = listingData;
+const formatDatePosted = (listingData) => {
+  const { datePosted } = listingData;
 
-  const price = rawTextData[0];
-  const timeSince = rawTextData[2].split(" ").slice(-2);
-  const description = rawTextData[1].concat(rawTextData[3]);
-  const rooms = rawTextData[4];
+  const tooLongAgo = !["minutes", "heures"].some(word => datePosted.includes(word))
+  if (tooLongAgo) {
+    return {
+      ...listingData,
+      timeSince: Number.MAX_VALUE,
+    }
+  }
+
+  const datePostedCleaned = datePosted.split("Il y a moins de")[1].trim().split(" ");
+  const timeSince = datePostedCleaned[1] === "heures" ? datePostedCleaned[0] * 60 : parseInt(datePostedCleaned[0]);
 
   return {
-    meta,
-    price,
+    ...listingData,
     timeSince,
-    description,
-    rooms,
   };
 }
 
 const processRawListingsData = (listingsData) => {
   console.log('\n###### Processing Data ...')
-  const listings = listingsData.map(listing => processRawListingData(listing));
   const blackListedWords = generateKeywords(keywordsBlackList);
 
-  const filteredListings = listings
-    .filter(listing => !blackListedWords.some(word => listing.description.includes(word)))
-    .filter(l => ["heures", "minutes"].includes(l.timeSince[1]))
-    .map(listing => {
-      if(listing.timeSince[1] === "heures") {
-        return {
-          ...listing,
-          timeSince: listing.timeSince[0] * 60,
-        }
-      }
+  const formatedListings = listingsData.map(listing => formatDatePosted(listing))
+  console.log({ formatedListings })
 
-      return {
-        ...listing,
-        timeSince: parseInt(listing.timeSince[0], 10)
-      }
-    })
-    .map(listing => {
-      const rating = rate(listing);
-      return {
-        ...listing,
-        rating,
-      }
-    })
-    .sort((a, b) => (b.rating - a.rating));
+  const filteredListings = formatedListings
+    .filter(listing => !blackListedWords.some(word => listing.text.includes(word)))
+    .map(listing => rate(listing))
+    .sort((a, b) => (b.rating - a.rating))
+    .slice(0, 20);
 
   console.log(filteredListings);
-  console.log(`\nProcessed ${listings.length} listings.`)
-  console.log(`\nKept ${filteredListings.length} listings after filter.`)
+  console.log(`\nProcessed ${listingsData.length} raw listings.`)
+  console.log(`\nKept ${filteredListings.length} listings.`)
 
   return filteredListings;
 }
