@@ -116,19 +116,22 @@ const processRawListingsData = (listingsData) => {
   const blackListedWords = generateKeywords(keywordsBlackList);
 
   const formatedListings = listingsData.map(listing => formatDatePosted(listing))
-  console.log({ formatedListings })
 
   const filteredListings = formatedListings
     .filter(listing => !blackListedWords.some(word => listing.text.includes(word)))
+
+  const finalData = filteredListings
     .map(listing => rate(listing))
     .sort((a, b) => (b.rating - a.rating))
     .slice(0, 20);
 
-  console.log(filteredListings);
+  console.log(finalData);
+  console.log('\n############# STATS #############\n')
   console.log(`\nProcessed ${listingsData.length} raw listings.`)
-  console.log(`\nKept ${filteredListings.length} listings.`)
+  console.log(`\nKept ${filteredListings.length} listings after filtering.`)
+  console.log(`\nRated listings with range of max=${finalData[0].rating} to min=${finalData.slice(-1)[0].rating}.`)
 
-  return filteredListings;
+  return finalData;
 }
 
 module.exports = { processRawListingsData }

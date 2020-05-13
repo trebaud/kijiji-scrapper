@@ -27,7 +27,7 @@ const paginate = async () => {
   let newPageURL;
   let rawData = [];
 
-  for (let pageNumber = 1; pageNumber < 2; pageNumber++) {
+  for (let pageNumber = 1; pageNumber < 4; pageNumber++) {
     console.log(`######### Fetching Page n/${pageNumber}`)
     try {
       newPageURL = getNextPageUrl(pageURL, pageNumber);
