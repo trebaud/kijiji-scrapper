@@ -1,5 +1,7 @@
 const basePathURL = ''; // set your base path with your initial search parameters
 
+const NB_MAX_PAGES = 3; // number of pages to scrappe
+
 const keywordsWhiteList = [
   "PLATEAU",
   "Patrie",
@@ -53,4 +55,5 @@ module.exports = {
   basePathURL,
   keywordsBlackList,
   keywordsWhiteList,
+  NB_MAX_PAGES,
 };

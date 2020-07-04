@@ -2,11 +2,13 @@ const fs = require('fs');
 
 const scrapper = require("./webscrapper");
 const analytics = require("./analytics");
-const config = require('./config');
+const config = require('../config');
 const utils = require('./utils');
 
+const { basePathURL, NB_MAX_PAGES } = config;
+
 const baseURL = 'https://www.kijiji.ca';
-const pageURL = `${baseURL}${config.basePathURL}`;
+const pageURL = basePathURL.includes(baseURL) ? basePathURL : `${baseURL}${basePathURL}`;
 
 const getNextPageUrl = (pageURL, pageNumber) => {
   if(pageNumber < 2) {
@@ -28,7 +30,7 @@ const paginate = async () => {
   let newPageURL;
   let rawData = [];
 
-  for (let pageNumber = 1; pageNumber < 4; pageNumber++) {
+  for (let pageNumber = 1; pageNumber < NB_MAX_PAGES + 1; pageNumber++) {
     console.log(`######### Fetching Page n/${pageNumber}`)
     try {
       newPageURL = getNextPageUrl(pageURL, pageNumber);
@@ -41,13 +43,26 @@ const paginate = async () => {
     await utils.sleep(1000);
   }
 
-  return analytics.processRawListingsData(rawData);
+  return rawData;
 }
 
-const exec = async () => {
-  const results = await paginate();
-  fs.writeFileSync('results.json', JSON.stringify(results))
+const logResults = ({ results, allListingsNb, filteredListingsNb }) => {
+  const firstTwentyResults = results.slice(0, 20);
+
+  console.log('\nFirst 20 results:\n', firstTwentyResults);
+  console.log('\n############# STATS #############\n')
+  console.log(`\nProcessed ${allListingsNb} raw listings.`)
+  console.log(`\nKept ${filteredListingsNb} listings after filtering.`)
+  console.log(`\nRated listings with range of max=${results[0].rating} to min=${results.slice(-1)[0].rating}.`)
+  console.log('\nCheck your results.json file to view all listing results')
+}
+
+(async () => {
+  const rawData = await paginate();
+  const processedData = analytics.processRawListingsData(rawData);
+
+  logResults(processedData)
+
+  fs.writeFileSync('results.json', JSON.stringify(processedData.results))
   process.exit();
-}
-
-exec();
+})();

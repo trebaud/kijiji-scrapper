@@ -1,4 +1,4 @@
-const config = require('./config');
+const config = require('../config');
 const utils = require('./utils');
 
 const { keywordsWhiteList, keywordsBlackList } = config;
@@ -54,18 +54,15 @@ const processRawListingsData = (listingsData) => {
   const filteredListings = formatedListings
     .filter(listing => !blackListedWords.some(word => listing.text.includes(word)))
 
-  const finalData = filteredListings
+  const results = filteredListings
     .map(listing => rate(listing))
-    .sort((a, b) => (b.rating - a.rating))
-    .slice(0, 20);
+    .sort((a, b) => (b.rating - a.rating));
 
-  console.log(finalData);
-  console.log('\n############# STATS #############\n')
-  console.log(`\nProcessed ${listingsData.length} raw listings.`)
-  console.log(`\nKept ${filteredListings.length} listings after filtering.`)
-  console.log(`\nRated listings with range of max=${finalData[0].rating} to min=${finalData.slice(-1)[0].rating}.`)
-
-  return finalData;
+  return {
+    results,
+    allListingsNb: listingsData.length,
+    filteredListingsNb: filteredListings.length
+  };
 }
 
 module.exports = { processRawListingsData }

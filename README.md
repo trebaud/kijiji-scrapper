@@ -8,7 +8,7 @@ A simple and minimalistic script to scrape Kijiji's real estate listings using [
 
 ### Set configuration file
 
-`$ cp src/config.example.js src/config.js`
+`$ cp config.example.js config.js`
 
 Set your `basePathURL` in the config file with your predefined search and filter parameters from kijiji url.
 

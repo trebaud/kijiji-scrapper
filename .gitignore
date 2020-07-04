@@ -2,4 +2,6 @@ tags*
 
 /node_modules
 
-/src/config.js
+config.js
+
+results.json
