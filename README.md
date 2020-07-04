@@ -1,6 +1,6 @@
 # Kijiji Scrapper
 
-A simple and minimalistic script to scrape Kijiji's real estate listings using [Puppeteer](https://github.com/puppeteer/puppeteer);
+A simple and minimalistic script to scrape Kijiji's real estate listings with [Puppeteer](https://github.com/puppeteer/puppeteer).
 
 ### Setup
 
@@ -15,3 +15,5 @@ Set your `basePathURL` in the config file with your predefined search and filter
 ### Run
 
 `$ node src/index.js`
+
+All results are saved in `results.json`.
