@@ -20,20 +20,28 @@ const rate = (listing) => {
 
   return {
     ...listing,
-    rating: (1 / listing.timeSince) * Math.pow(10, matches.length) * 100,
+    rating: (1 / listing.timeSince) * Math.pow(2, matches.length) * 100,
     matches,
   };
 }
 
 const formatDatePosted = (listingData) => {
+  // TODO Handle english terms
   const { datePosted } = listingData;
 
-  const tooLongAgo = !["minutes", "heures"].some(word => datePosted.includes(word))
+  const tooLongAgo = !["minute", "minutes", "heures", "hier"].some(word => datePosted.includes(word))
   if (tooLongAgo) {
     return {
       ...listingData,
       timeSince: Number.MAX_VALUE,
     }
+  }
+
+  if (datePosted === "hier") {
+    return {
+      ...listingData,
+      timeSince: 24 * 60,
+    };
   }
 
   const datePostedCleaned = datePosted.split("Il y a moins de")[1].trim().split(" ");
@@ -52,6 +60,7 @@ const processRawListingsData = (listingsData) => {
   const formatedListings = listingsData.map(listing => formatDatePosted(listing))
 
   const filteredListings = formatedListings
+    .filter(listing => listing.timeSince !== Number.MAX_VALUE)
     .filter(listing => !blackListedWords.some(word => listing.text.includes(word)))
 
   const results = filteredListings

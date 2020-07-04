@@ -1,9 +1,12 @@
 const fs = require('fs');
+const chalk = require('chalk');
 
 const scrapper = require("./webscrapper");
 const analytics = require("./analytics");
 const config = require('../config');
 const utils = require('./utils');
+
+const { log, error } = console;
 
 const { basePathURL, NB_MAX_PAGES } = config;
 
@@ -31,15 +34,17 @@ const paginate = async () => {
   let rawData = [];
 
   for (let pageNumber = 1; pageNumber < NB_MAX_PAGES + 1; pageNumber++) {
-    console.log(`######### Fetching Page n/${pageNumber}`)
+    log(chalk.magenta.bold(`\nFetching Page n/${pageNumber}`));
+
     try {
       newPageURL = getNextPageUrl(pageURL, pageNumber);
       const pageResults = await scrapper(newPageURL);
       rawData = rawData.concat(pageResults);
     } catch(err) {
-      console.error(err);
+      error(err);
     }
-    console.log('\nWaiting 1s...\n');
+
+    log(chalk.cyan('\nWaiting 1s...\n'));
     await utils.sleep(1000);
   }
 
@@ -49,12 +54,12 @@ const paginate = async () => {
 const logResults = ({ results, allListingsNb, filteredListingsNb }) => {
   const firstTwentyResults = results.slice(0, 20);
 
-  console.log('\nFirst 20 results:\n', firstTwentyResults);
-  console.log('\n############# STATS #############\n')
-  console.log(`\nProcessed ${allListingsNb} raw listings.`)
-  console.log(`\nKept ${filteredListingsNb} listings after filtering.`)
-  console.log(`\nRated listings with range of max=${results[0].rating} to min=${results.slice(-1)[0].rating}.`)
-  console.log('\nCheck your results.json file to view all listing results')
+  log('\nFirst 20 results:\n', firstTwentyResults);
+  log(chalk.magenta.bold('\n\n📊 ############# STATS #############\n'));
+  log(`\n👉 Processed ${allListingsNb} raw listings.`);
+  log(`\n👉 Kept ${filteredListingsNb} listings after filtering.`);
+  log(`\n👉 Rated listings with range of max=${chalk.green(results[0].rating)} to min=${chalk.red(results.slice(-1)[0].rating)}.`);
+  log(`\n👉 Check your ${chalk.cyan.underline('results.json')} file to view all listing results`);
 }
 
 (async () => {
