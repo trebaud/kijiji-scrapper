@@ -1,76 +1,10 @@
-const keywordsWhiteList = [
-  "PLATEAU",
-  "Patrie",
-  "Petite",
-  "Plateau",
-  "ROSEMONT",
-  "Rosemont",
-  "WESTMOUNT",
-  "Westmount",
-  "balcon",
-  "balcony",
-  "italie",
-  "italy",
-  "laurier",
-  "metro",
-  "mont-royal",
-  "métro",
-  "patrie",
-  "plateau",
-  "rosemont",
-  "terasse",
-  "westmount",
-]
+const config = require('./config');
+const utils = require('./utils');
 
-const keywordsBlackList = [
-  "H-Beaugrand",
-  "Henri-Bourassa",
-  "Honoré-Beaugrand",
-  "LaSalle",
-  "McGill Student",
-  "VSL",
-  "Ville Saint-Laurent",
-  "West Island",
-  "ahuntsic",
-  "assomption",
-  "basement",
-  "bourassa",
-  "cadillac",
-  "cartier",
-  "cartierville",
-  "cremazie",
-  "dorval",
-  "echange",
-  "exchange",
-  "fabre",
-  "henri",
-  "hochelaga",
-  "jarry",
-  "langelier",
-  "lasalle",
-  "laval",
-  "longueil",
-  "masson",
-  "mercier",
-  "homa",
-  "molson",
-  "nord",
-  "pierrefonds",
-  "sous-sol",
-  "st-michel",
-  "student",
-  "students",
-  "suspendue",
-  "swap",
-  "verdun",
-  "viau",
-  "villeray",
-]
-
-const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+const { keywordsWhiteList, keywordsBlackList } = config;
 
 const generateKeywords = (list) => {
-  const capitalizedWords = list.map(word => capitalize(word));
+  const capitalizedWords = list.map(word => utils.capitalize(word));
   const upperCasedWords = list.map(word => word.toUpperCase());
 
   return list.concat(capitalizedWords).concat(upperCasedWords);

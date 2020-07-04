@@ -1,11 +1,12 @@
-const scrapper = require("./webscrapper");
-const analytics = require("./analytics");
 const fs = require('fs');
 
-const baseURL = 'https://www.kijiji.ca';
-const pageURL = `${baseURL}/b-appartement-condo/ville-de-montreal/1+1+2+ou+2+1+2__3+1+2__3+1+2+et+coin+detente/c37l1700281a27949001?ll=45.526705%2C-73.578234&address=4383+Rue+Boyer%2C+Montr%C3%A9al%2C+QC+H2J+3C9%2C+Canada&ad=offering&radius=6.0&price=540__1000`;
+const scrapper = require("./webscrapper");
+const analytics = require("./analytics");
+const config = require('./config');
+const utils = require('./utils');
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const baseURL = 'https://www.kijiji.ca';
+const pageURL = `${baseURL}${config.basePathURL}`;
 
 const getNextPageUrl = (pageURL, pageNumber) => {
   if(pageNumber < 2) {
@@ -37,7 +38,7 @@ const paginate = async () => {
       console.error(err);
     }
     console.log('\nWaiting 1s...\n');
-    await sleep(1000);
+    await utils.sleep(1000);
   }
 
   return analytics.processRawListingsData(rawData);
