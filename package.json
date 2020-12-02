@@ -1,15 +1,14 @@
 {
   "name": "kijiji-scrapper",
   "version": "1.0.0",
-  "description": "",
+  "description": "Scrape kijiji real estate listing",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chalk": "^4.1.0",
-    "puppeteer": "^3.0.2"
+    "chalk": "4.x",
+    "ora": "5.x",
+    "prettyjson": "^1.2.1",
+    "puppeteer": "3.x"
   }
 }
