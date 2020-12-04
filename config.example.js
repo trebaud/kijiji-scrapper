@@ -1,8 +1,7 @@
 const BASE_PATH_URL = '';
-
 const NB_MAX_PAGES = 3; // number of pages to scrappe
-
 const PAUSE_DELAY = 1000;
+const NUMBER_RESULTS_DISPLAYED = 5;
 
 const KEYWORDS_WHITELIST = [
   'PLATEAU',
@@ -78,5 +77,6 @@ module.exports = {
   KEYWORDS_BLACKLIST,
   KEYWORDS_WHITELIST,
   NB_MAX_PAGES,
+  NUMBER_RESULTS_DISPLAYED,
   PAUSE_DELAY,
 };
