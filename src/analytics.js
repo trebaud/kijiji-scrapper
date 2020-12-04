@@ -28,8 +28,10 @@ const rate = (listing) => {
 const formatDatePosted = (listingData) => {
   // TODO Handle english terms
   const { datePosted } = listingData;
+  const frTerms = ['minute', 'minutes', 'heures', 'hier'];
+  const enTerms = ['hours', 'Yesterday']; // should not be needed as website displays in french by default
 
-  const tooLongAgo = !['minute', 'minutes', 'heures', 'hier'].some((word) => datePosted.includes(word));
+  const tooLongAgo = ![...frTerms, ...enTerms].some((word) => datePosted.includes(word));
   if (tooLongAgo) {
     return {
       ...listingData,
@@ -37,19 +39,17 @@ const formatDatePosted = (listingData) => {
     };
   }
 
-  if (datePosted === 'hier') {
+  if (datePosted === 'hier' || datePosted === 'Yesterday') {
     return {
       ...listingData,
       timeSince: 24 * 60,
     };
   }
 
-  const datePostedCleaned = datePosted.split('Il y a moins de')[1].trim().split(' ');
-  const timeSince = datePostedCleaned[1] === 'heures' ? datePostedCleaned[0] * 60 : parseInt(datePostedCleaned[0]);
-
+  const timeSinceMinutesOrHours = datePosted.match(/\d+/)[0];
   return {
     ...listingData,
-    timeSince,
+    timeSince: datePosted.includes('minutes') ? timeSinceMinutesOrHours : timeSinceMinutesOrHours * 60,
   };
 };
 

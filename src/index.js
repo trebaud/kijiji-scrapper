@@ -69,10 +69,10 @@ const paginate = async () => {
 };
 
 const logResults = ({ results, allListingsNb, filteredListingsNb }) => {
-  const firstTwentyResults = results.slice(0, 20);
+  const displayedResults = results.slice(0, config.NUMBER_RESULTS_DISPLAYED);
 
-  log(chalk.blue.bold('\nFirst 20 results:\n'));
-  log(prettyjson.render(firstTwentyResults));
+  log(chalk.blue.bold(`\nFirst ${config.NUMBER_RESULTS_DISPLAYED} results:\n`));
+  log(prettyjson.render(displayedResults));
   log(chalk.magenta.bold('\n\n📊 ############# STATS #############\n'));
   log(
     `\n👉 Processed ${allListingsNb} raw listings with ratings ranging from ${chalk.green(
@@ -80,7 +80,7 @@ const logResults = ({ results, allListingsNb, filteredListingsNb }) => {
     )} to ${chalk.red(results.slice(-1)[0].rating)}.`,
   );
   log(`\n👉 Kept ${filteredListingsNb} listings after filtering.`);
-  log(`\n👉 Check ${chalk.cyan.underline('results.json')} to view all listing`);
+  log(`\n👉 Check ${chalk.cyan.underline('results.json')} to view all listings.`);
 };
 
 (async () => {
