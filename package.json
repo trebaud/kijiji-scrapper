@@ -4,11 +4,15 @@
   "description": "Scrape kijiji real estate listing",
   "main": "index.js",
   "author": "",
+  "type": "module",
   "license": "ISC",
   "dependencies": {
-    "chalk": "4.x",
-    "ora": "5.x",
-    "prettyjson": "^1.2.1",
-    "puppeteer": "3.x"
+    "chalk": "5.x",
+    "ora": "6.x",
+    "prettyjson": "1.x",
+    "puppeteer": "20.x"
+  },
+  "scripts": {
+    "relock": "rm -rf node_modules && rm -f package-lock.json && npm install"
   }
 }
